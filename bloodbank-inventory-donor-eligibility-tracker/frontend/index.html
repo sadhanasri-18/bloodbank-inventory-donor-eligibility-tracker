@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Blood Bank Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        /* HEADER */
+        .header {
+            background: #b71c1c;
+            color: white;
+            padding: 22px 40px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            opacity: 0.9;
+        }
+
+        /* NAVIGATION */
+        .navbar {
+            background: white;
+            padding: 15px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .navbar button {
+            border: none;
+            background: transparent;
+            color: #444;
+            padding: 10px 18px;
+            margin-right: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 6px;
+        }
+
+        .navbar button:hover {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        /* MAIN */
+        .container {
+            padding: 30px 40px;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .page-title p {
+            color: #777;
+        }
+
+        /* DASHBOARD CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin: 0;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .card .number {
+            margin-top: 12px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #b71c1c;
+        }
+
+        /* SECTIONS */
+        .section {
+            margin-top: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            margin-top: 0;
+            color: #b71c1c;
+        }
+
+        /* FORMS */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn {
+            margin-top: 20px;
+            background: #b71c1c;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn:hover {
+            background: #8e0000;
+        }
+
+        /* BLOOD GROUP BUTTONS */
+        .blood-groups {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .blood-group {
+            background: #fff5f5;
+            border: 1px solid #ffcdd2;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .blood-group h3 {
+            margin: 0;
+            color: #b71c1c;
+        }
+
+        .blood-group p {
+            font-size: 25px;
+            font-weight: bold;
+            margin: 10px 0 0;
+        }
+
+        /* RESULT */
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* FOOTER */
+        footer {
+            margin-top: 40px;
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 18px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .blood-groups {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .cards,
+            .form-grid,
+            .blood-groups {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .navbar {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <h1>🩸 Blood Bank Management System</h1>
+    <p>Inventory and Donor Eligibility Tracker</p>
+</div>
+
+<!-- NAVIGATION -->
+<div class="navbar">
+    <button onclick="showSection('dashboard')">Dashboard</button>
+    <button onclick="showSection('donor')">Donor</button>
+    <button onclick="showSection('donation')">Donation</button>
+    <button onclick="showSection('inventory')">Inventory</button>
+    <button onclick="showSection('issue')">Issue Blood</button>
+    <button onclick="showSection('eligibility')">Eligibility</button>
+</div>
+
+<div class="container">
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="page-section">
+
+        <div class="page-title">
+            <h2>Dashboard</h2>
+            <p>Blood bank overview and inventory status</p>
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Donors</h3>
+                <div class="number" id="donorCount">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Total Blood Units</h3>
+                <div class="number" id="unitCount">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Available Units</h3>
+                <div class="number" id="availableCount">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Issued Units</h3>
+                <div class="number" id="issuedCount">0</div>
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h2>Blood Inventory</h2>
+
+            <div class="blood-groups">
+
+                <div class="blood-group">
+                    <h3>A+</h3>
+                    <p id="apos">0</p>
+                </div>
+
+                <div class="blood-group">
+                    <h3>A-</h3>
+                    <p id="aneg">0</p>
+                </div>
+
+                <div class="blood-group">
+                    <h3>B+</h3>
+                    <p id="bpos">0</p>
+                </div>
+
+                <div class="blood-group">
+                    <h3>B-</h3>
+                    <p id="bneg">0</p>
+                </div>
+
+                <div class="blood-group">
+                    <h3>AB+</h3>
+                    <p id="abpos">0</p>
+                </div>
+
+                <div class="blood-group">
+                    <h3>AB-</h3>
+                    <p id="abneg">0</p>
+                </div>
+
+                <div class="blood-group">
+                    <h3>O+</h3>
+                    <p id="opos">0</p>
+                </div>
+
+                <div class="blood-group">
+                    <h3>O-</h3>
+                    <p id="oneg">0</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DONOR -->
+    <div id="donor" class="page-section" style="display:none">
+
+        <div class="section">
+
+            <h2>👤 Add Donor</h2>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Donor Name</label>
+                    <input type="text" id="donorName"
+                           placeholder="Enter donor name">
+                </div>
+
+                <div class="form-group">
+                    <label>Blood Group</label>
+                    <select id="donorBloodGroup">
+                        <option value="A_POSITIVE">A+</option>
+                        <option value="A_NEGATIVE">A-</option>
+                        <option value="B_POSITIVE">B+</option>
+                        <option value="B_NEGATIVE">B-</option>
+                        <option value="AB_POSITIVE">AB+</option>
+                        <option value="AB_NEGATIVE">AB-</option>
+                        <option value="O_POSITIVE">O+</option>
+                        <option value="O_NEGATIVE">O-</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button class="btn" onclick="addDonor()">
+                Add Donor
+            </button>
+
+            <div id="donorResult" class="result"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DONATION -->
+    <div id="donation" class="page-section" style="display:none">
+
+        <div class="section">
+
+            <h2>💉 Record Donation</h2>
+
+            <div class="form-group">
+                <label>Donor ID</label>
+                <input type="text"
+                       id="donationDonorId"
+                       placeholder="Enter donor UUID">
+            </div>
+
+            <button class="btn" onclick="recordDonation()">
+                Record Donation
+            </button>
+
+            <div id="donationResult" class="result"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- INVENTORY -->
+    <div id="inventory" class="page-section" style="display:none">
+
+        <div class="section">
+
+            <h2>🩸 Blood Inventory</h2>
+
+            <div class="form-group">
+                <label>Select Blood Group</label>
+
+                <select id="inventoryGroup">
+
+                    <option value="A_POSITIVE">A+</option>
+                    <option value="A_NEGATIVE">A-</option>
+                    <option value="B_POSITIVE">B+</option>
+                    <option value="B_NEGATIVE">B-</option>
+                    <option value="AB_POSITIVE">AB+</option>
+                    <option value="AB_NEGATIVE">AB-</option>
+                    <option value="O_POSITIVE">O+</option>
+                    <option value="O_NEGATIVE">O-</option>
+
+                </select>
+            </div>
+
+            <button class="btn" onclick="checkInventory()">
+                Check Available Blood
+            </button>
+
+            <div id="inventoryResult" class="result"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ISSUE BLOOD -->
+    <div id="issue" class="page-section" style="display:none">
+
+        <div class="section">
+
+            <h2>🚑 Issue Blood</h2>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Blood Unit ID</label>
+                    <input type="text"
+                           id="issueUnitId"
+                           placeholder="Enter blood unit UUID">
+                </div>
+
+                <div class="form-group">
+                    <label>Blood Group</label>
+
+                    <select id="issueBloodGroup">
+
+                        <option value="A_POSITIVE">A+</option>
+                        <option value="A_NEGATIVE">A-</option>
+                        <option value="B_POSITIVE">B+</option>
+                        <option value="B_NEGATIVE">B-</option>
+                        <option value="AB_POSITIVE">AB+</option>
+                        <option value="AB_NEGATIVE">AB-</option>
+                        <option value="O_POSITIVE">O+</option>
+                        <option value="O_NEGATIVE">O-</option>
+
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Recipient Details</label>
+                    <input type="text"
+                           id="recipient"
+                           placeholder="Enter recipient details">
+                </div>
+
+            </div>
+
+            <button class="btn" onclick="issueBlood()">
+                Issue Blood
+            </button>
+
+            <div id="issueResult" class="result"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ELIGIBILITY -->
+    <div id="eligibility" class="page-section" style="display:none">
+
+        <div class="section">
+
+            <h2>🔎 Donor Eligibility</h2>
+
+            <div class="form-group">
+
+                <label>Donor ID</label>
+
+                <input type="text"
+                       id="eligibilityDonorId"
+                       placeholder="Enter donor UUID">
+
+            </div>
+
+            <button class="btn" onclick="checkEligibility()">
+                Check Eligibility
+            </button>
+
+            <div id="eligibilityResult" class="result"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    Blood Bank Management System | Inventory and Donor Eligibility Tracker
+</footer>
+
+
+<script>
+
+    const API = "http://localhost:8080";
+
+
+    /* NAVIGATION */
+
+    function showSection(sectionId) {
+
+        const sections = document.querySelectorAll(".page-section");
+
+        sections.forEach(section => {
+            section.style.display = "none";
+        });
+
+        document.getElementById(sectionId).style.display = "block";
+
+    }
+
+
+    /* RESULT MESSAGE */
+
+    function showResult(elementId, message, success) {
+
+        const element = document.getElementById(elementId);
+
+        element.style.display = "block";
+
+        element.className = success
+            ? "result success"
+            : "result error";
+
+        element.innerText = message;
+
+    }
+
+
+    /* ADD DONOR */
+
+    async function addDonor() {
+
+        const name =
+            document.getElementById("donorName").value;
+
+        const bloodGroup =
+            document.getElementById("donorBloodGroup").value;
+
+        if (!name) {
+
+            showResult(
+                "donorResult",
+                "Please enter donor name.",
+                false
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/api/donors",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        name: name,
+                        bloodGroup: bloodGroup,
+                        lastDonationDate: null
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Unable to add donor");
+            }
+
+            showResult(
+                "donorResult",
+                "Donor added successfully. Donor ID: " + data.donorId,
+                true
+            );
+
+            document.getElementById("donorName").value = "";
+
+        } catch (error) {
+
+            showResult(
+                "donorResult",
+                error.message,
+                false
+            );
+
+        }
+
+    }
+
+
+    /* RECORD DONATION */
+
+    async function recordDonation() {
+
+        const donorId =
+            document.getElementById("donationDonorId").value;
+
+        if (!donorId) {
+
+            showResult(
+                "donationResult",
+                "Please enter donor ID.",
+                false
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/api/donations",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        donorId: donorId,
+                        collectionDate:
+                            new Date().toISOString().split("T")[0]
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Donation failed"
+                );
+            }
+
+            showResult(
+                "donationResult",
+                "Donation recorded successfully. Donation ID: "
+                + data.donationId,
+                true
+            );
+
+        } catch (error) {
+
+            showResult(
+                "donationResult",
+                error.message,
+                false
+            );
+
+        }
+
+    }
+
+
+    /* CHECK INVENTORY */
+
+    async function checkInventory() {
+
+        const group =
+            document.getElementById("inventoryGroup").value;
+
+        try {
+
+            const response = await fetch(
+                API + "/api/blood-units/available/" + group
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error("Unable to fetch inventory");
+            }
+
+            if (data.length === 0) {
+
+                showResult(
+                    "inventoryResult",
+                    "No available blood units found.",
+                    false
+                );
+
+                return;
+            }
+
+            showResult(
+                "inventoryResult",
+                data.length +
+                " available blood unit(s) found.",
+                true
+            );
+
+        } catch (error) {
+
+            showResult(
+                "inventoryResult",
+                error.message,
+                false
+            );
+
+        }
+
+    }
+
+
+    /* ISSUE BLOOD */
+
+    async function issueBlood() {
+
+        const unitId =
+            document.getElementById("issueUnitId").value;
+
+        const bloodGroup =
+            document.getElementById("issueBloodGroup").value;
+
+        const recipient =
+            document.getElementById("recipient").value;
+
+        if (!unitId || !recipient) {
+
+            showResult(
+                "issueResult",
+                "Please enter all required details.",
+                false
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/api/issues",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        unitId: unitId,
+
+                        bloodGroup: bloodGroup,
+
+                        recipientDetails: recipient,
+
+                        requestDate:
+                            new Date().toISOString().split("T")[0]
+
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Blood issue failed"
+                );
+            }
+
+            showResult(
+                "issueResult",
+                "Blood issued successfully. Issue ID: "
+                + data.issueId,
+                true
+            );
+
+        } catch (error) {
+
+            showResult(
+                "issueResult",
+                error.message,
+                false
+            );
+
+        }
+
+    }
+
+
+    /* ELIGIBILITY */
+
+    async function checkEligibility() {
+
+        const donorId =
+            document.getElementById("eligibilityDonorId").value;
+
+        if (!donorId) {
+
+            showResult(
+                "eligibilityResult",
+                "Please enter donor ID.",
+                false
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API + "/api/donors/" +
+                donorId +
+                "/eligibility"
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Unable to check eligibility"
+                );
+            }
+
+            showResult(
+                "eligibilityResult",
+                "Eligibility result: " +
+                JSON.stringify(data),
+                true
+            );
+
+        } catch (error) {
+
+            showResult(
+                "eligibilityResult",
+                error.message,
+                false
+            );
+
+        }
+
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Bank Management System</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+        }
+
+        .header {
+            background: #b71c1c;
+            color: white;
+            padding: 20px 40px;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+        }
+
+        .container {
+            padding: 30px 40px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #555;
+        }
+
+        .card p {
+            font-size: 30px;
+            font-weight: bold;
+            color: #b71c1c;
+        }
+
+        .section {
+            margin-top: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        button {
+            background: #b71c1c;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #8e0000;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🩸 Blood Bank Management System</h1>
+    <p>Inventory and Donor Eligibility Tracker</p>
+</div>
+
+<div class="container">
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Donors</h3>
+            <p id="donorCount">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Blood Units</h3>
+            <p id="unitCount">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Available Units</h3>
+            <p id="availableCount">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Issued Units</h3>
+            <p id="issuedCount">0</p>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <h2>Blood Bank Dashboard</h2>
+
+        <p>
+            Manage donors, donations, blood inventory and blood issue records
+            from one centralized system.
+        </p>
+
+        <button onclick="loadData()">Refresh Data</button>
+    </div>
+
+</div>
+
+<script>
+
+    async function loadData() {
+
+        try {
+
+            const response = await fetch("http://localhost:8080/api/blood-units/available/O_POSITIVE");
+
+            const data = await response.json();
+
+            document.getElementById("availableCount").innerText = data.length;
+
+            document.getElementById("unitCount").innerText = data.length;
+
+        } catch (error) {
+
+            console.log("Backend connection error:", error);
+
+        }
+
+    }
+
+    loadData();
+
+</script>
+
+</body>
+</html>
